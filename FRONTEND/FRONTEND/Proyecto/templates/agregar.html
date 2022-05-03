@@ -1,4 +1,31 @@
 {% extends 'base.html' %}
-{% block context %}
-    
-{% endblock %}
+
+{% block content %}
+<br>
+<center>
+    <br>
+
+    <button type="button" class="button" onclick="Consultar()">Consultar Datos</button>
+    <button type="button" class="button">Resumen de clasificación por fecha</button>
+    <button type="button" class="button">Resumen por rango de fechas</button>
+    <button type="button" class="button">Reporte en PDF</button>
+    <button type="button" class="button">Prueba de mensaje</button>
+
+
+
+    <div class="form-group shadow-textarea">
+        <label for="exampleFormControlTextarea6" id="labelTxtArea" >
+            <h1 id="textoLabel">XML Ingresado</h1>
+        </label>
+        <textarea class="form-control z-depth-1" id="CuadroDeTexto" rows="15" readonly>{{ xml }}</textarea>
+    </div>
+</center>
+<script>
+    function Consultar() {
+        var label = document.getElementById('textoLabel')
+
+        label.innerText = 'XML Ingresado'
+    }
+</script>
+
+{% endblock content %}

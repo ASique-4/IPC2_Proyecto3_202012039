@@ -1,7 +1,47 @@
 {% extends "base.html"%}
 {% block content %}
-<h1>Este es el proyecto 3</h1>
-    {% for mensaje in mensajes %}
-        <h3>{{ mensaje }}</h3>
-    {% endfor %}
+
+
+
+
+<form action="/index/" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <br>
+    <center>
+        
+        <button type="submit" class="button" style="background-color: green;">Enviar</button>
+        <button type="button" class="button" style="background-color: red;">Resetear</button>
+        <br>
+        <br>
+        <label for="file"><h4>Cargar Archivo</h4></label>
+    
+    <input type="file" id="file" name="file"  accept="text/xml">
+    </center>
+    <center>
+        <div class="form-group shadow-textarea" style="float: left;height: 20em;width: 700px;">
+            <label for="exampleFormControlTextarea6" id="labelTxtArea">
+                <h1 id="textoLabel">Entrada</h1>
+            </label>
+            {% if xml %}
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto" cols="30"  rows="15" readonly>{{ xml }}</textarea>
+            {% else %}
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto" cols="30"  rows="15" readonly></textarea>
+            {% endif %}
+            
+        </div>
+        <div class="form-group shadow-textarea" style="float: right;height: 20em;width: 700px;">
+            <label for="exampleFormControlTextarea6" id="labelTxtArea">
+                <h1 id="textoLabel">Salida</h1>
+            </label>
+            {% if salida %}
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto2" rows="15" cols="30" readonly>{{ salida }}</textarea>
+            {% else %}
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto2" rows="15" cols="30"  readonly></textarea>
+            {% endif %}
+            
+        </div>
+    </center>
+    
+</form>
+
 {% endblock content %}
