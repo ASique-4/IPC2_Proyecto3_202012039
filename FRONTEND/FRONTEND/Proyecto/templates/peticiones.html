@@ -15,15 +15,18 @@
 
     <div class="form-group shadow-textarea">
         <label for="exampleFormControlTextarea6" id="labelTxtArea" >
-            <h1 id="textoLabel">XML Ingresado</h1>
+            <h1 id="textoLabel"></h1>
         </label>
-        <textarea class="form-control z-depth-1" id="CuadroDeTexto" rows="15" readonly>{{ xml }}</textarea>
+        {% if xml %}
+        <textarea class="form-control z-depth-1" id="xmlConsulta" rows="15" style="visibility: hidden;" readonly>{{ xml }}</textarea>
+        {% endif %}
     </div>
 </center>
 <script>
     function Consultar() {
         var label = document.getElementById('textoLabel')
-
+        var xmlTxt = document.getElementById('xmlConsulta')
+        xmlTxt.style.visibility = 'visible'
         label.innerText = 'XML Ingresado'
     }
 </script>

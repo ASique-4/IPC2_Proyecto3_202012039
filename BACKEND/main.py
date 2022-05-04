@@ -78,7 +78,7 @@ def add():
 
 @app.route('/getXML')
 def get_XML():
-    print(manage.xml)
+
     return jsonify({'xml' : manage.xml}) , 200
 
 

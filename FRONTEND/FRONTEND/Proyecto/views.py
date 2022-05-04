@@ -55,6 +55,6 @@ def consultarDatos(request):
     }
     response = requests.get(endpoint + 'getXML')
     datos = response.json()
-    context['xml'] = datos
+    context['xml'] = datos['xml']
     
-    return render(request,'agregar.html',context=context)
+    return render(request,'peticiones.html',context=context)

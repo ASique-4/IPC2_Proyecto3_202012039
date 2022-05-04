@@ -144,6 +144,8 @@ class Manager():
         countNeg = 0
         countNeu = 0
         json = []
+        jsonServ = {}
+        jsonEmp = {}
         empresasmencionadas = []
         serviciosMencionados = []
         strJson = '['
@@ -184,21 +186,22 @@ class Manager():
             strJson = strJson[:-1] + ']' 
             Json = eval(strJson)
             
-            paso = []
-            for fecha in self.Mensajes:
+            fecha = []
+            for tmpMensaje in self.Mensajes:
                 for mensaje in Json:
-                    if mensaje[4] == fecha.fecha:
-                        countEmp = 0
-                        countServ = 0
-                        tmpCountPos = 0
-                        tmpCountNeg = 0
-                        tmpCountNeu = 0
+                    countEmp = 0
+                    countServ = 0
+                    tmpCountPos = 0
+                    tmpCountNeg = 0
+                    tmpCountNeu = 0
 
-                        tmpCountPosServ = 0
-                        tmpCountNegServ = 0
-                        tmpCountNeuServ = 0
-                        
-                        for empresa in Json:
+                    tmpCountPosServ = 0
+                    tmpCountNegServ = 0
+                    tmpCountNeuServ = 0
+                    
+                    for empresa in Json:
+                        if tmpMensaje.fecha == mensaje[4]:
+                            
                             if mensaje[2] == empresa[2]:
                                 countEmp += 1
                                 if mensaje[1] == 'Positivo':
@@ -216,47 +219,55 @@ class Manager():
                                         tmpCountNegServ += 1
                                     elif mensaje[1] == 'Neutro':
                                         tmpCountNeuServ += 1
-                        if mensaje[3] != [] and mensaje[2] != [] and mensaje[2] not in paso:
-                            paso.append(mensaje[2])
-                            tmpJson = {
-
-                                    'respuesta' : {
-                                        'fecha':mensaje[4],
-                                        'mensaje' : {
-                                            'total' : len(self.Mensajes),
-                                            'positivos' : countP,
-                                            'negativos' : countNeg,
-                                            'neutros' : countNeu
-                                        },
-                                        'analisis' : {
-                                            'empresa nombre="{}"'.format((mensaje[2][0])) : {
-                                                'mensajes' : {
-                                                    'total' : countEmp,
-                                                    'positivos' :  tmpCountPos,
-                                                    'negativos' : tmpCountNeg,
-                                                    'neutros' : tmpCountNeu
-                                                },
-                                                'servicio nombre="{}"'.format(mensaje[3][0]) :{
-                                                    'mensajes' : {
-                                                        'total' : countServ,
-                                                        'positivos' :  tmpCountPosServ,
-                                                        'negativos' : tmpCountNegServ,
-                                                        'neutros' : tmpCountNeuServ
-                                                    }
-                                                }
-                                            }
+                                    
+                                tmpjsonServicio = {
+                                        'servicio nombre="{}"'.format(mensaje[3][0]) :{
+                                        'mensajes' : {
+                                            'total' : countServ,
+                                            'positivos' :  tmpCountPosServ,
+                                            'negativos' : tmpCountNegServ,
+                                            'neutros' : tmpCountNeuServ
                                         }
-                                    },
-
+                                        }
+                                }
+                                jsonServ.update(tmpjsonServicio)
+                            
+                            tmpjsonEmpresa = {
+                                        'empresa nombre="{}"'.format((mensaje[2][0])) : {
+                                            'mensajes' : {
+                                                'total' : countEmp,
+                                                'positivos' :  tmpCountPos,
+                                                'negativos' : tmpCountNeg,
+                                                'neutros' : tmpCountNeu
+                                            },
+                                            'servicios' : jsonServ
+                                            }
                             }
+                            jsonEmp.update(tmpjsonEmpresa)
 
-                            json.append(tmpJson)
+                    if tmpMensaje.fecha == mensaje[4] and tmpMensaje.fecha not in fecha:
+                        fecha.append(tmpMensaje.fecha)
+                        
+                        tmpJson = {
 
+                                'respuesta' : {
+                                    'fecha':mensaje[4],
+                                    'mensaje' : {
+                                        'total' : len(self.Mensajes),
+                                        'positivos' : countP,
+                                        'negativos' : countNeg,
+                                        'neutros' : countNeu
+                                    },
+                                    'analisis': jsonEmp
+                                    }
+                                }
+                        
+                        json.append(tmpJson)
         
         JsonRoot = {
                 'lista_respuestas' : json
             }
-        return json2xml(JsonRoot) 
+        return json2xml(JsonRoot)
 
 
     def crearArchivoAlmacenamiento(self):
