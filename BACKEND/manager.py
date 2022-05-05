@@ -1,6 +1,4 @@
 
-from itertools import count
-from flask import jsonify
 from Empresas import Empresa
 from Mensaje import Mensaje
 from Negativos import Negativo
@@ -53,9 +51,15 @@ class Manager():
         self.empresas = []
         self.xml = ''
 
+    def eliminarXML(self):
+        self.Mensajes = []
+        self.positivos = []
+        self.negativos = []
+        self.empresas = []
+        self.xml = ''
     
 
-    def agregar_Mensaje(self, l, f, h, u, r, m):
+    def agregar_Mensaje(self, l, f, h, u, r, m, d):
         """
         It takes 6 arguments, and creates a new Mensaje object with those arguments, and then appends
         that object to the list of Mensajes
@@ -67,7 +71,7 @@ class Manager():
         :param r: social red
         :param m: message
         """
-        nuevo = Mensaje(l, f, h, u, r, m)
+        nuevo = Mensaje(l, f, h, u, r, m, d)
         self.Mensajes.append(nuevo)
 
     def agregar_Positivo(self, p):
@@ -131,93 +135,80 @@ class Manager():
     
 
     def contarPalabras(self):
-        """
-        It takes a list of messages, and for each message, it counts the number of positive and negative
-        words, and then it returns a list of dictionaries, each dictionary containing the message, the
-        sentiment, the companies mentioned, the services mentioned, and the date
-        :return: A list of dictionaries.
-        """
-        patron = re.compile(r'\S+')
-        positivas = 0
-        negativas = 0
-        countP = 0
-        countNeg = 0
-        countNeu = 0
-        json = []
-        jsonServ = {}
-        jsonEmp = {}
-        empresasmencionadas = []
-        serviciosMencionados = []
-        strJson = '['
+        fechas = []
+        jsonServ = []
         for mensaje in self.Mensajes:
-            positivas = 0
-            negativas = 0
-            palabras = patron.findall(mensaje.mensaje)
-            empresasmencionadas = []
-            serviciosMencionados = []
-            for palabra in palabras:
-                for positivo in self.positivos:
-                    if normalize(remove_punctuation(palabra).strip().lower())  == normalize(str(positivo.palabra).strip().lower()) :
-                        positivas += 1
-                for negativo in self.negativos:
-                    if normalize(remove_punctuation(palabra).strip().lower())  == normalize(str(negativo.palabra).strip().lower()):
-                        negativas += 1
-                for empresa in self.empresas:
-                    if normalize(remove_punctuation(palabra).strip().lower()) == normalize(str(empresa.nombre).strip().lower()):
-                        empresasmencionadas.append(empresa.nombre.strip() ) 
-                    for servicio in empresa.servicios:
-                        if normalize(remove_punctuation(palabra)) == normalize(str(servicio.nombre).strip().lower()) and servicio.nombre not in serviciosMencionados :
-                            serviciosMencionados.append(servicio.nombre.strip())
-                        for alias in servicio.alias:
-                            if normalize(remove_punctuation(palabra)) == normalize(str(alias.nombre).strip().lower()) and servicio.nombre not in serviciosMencionados :
-                                serviciosMencionados.append(servicio.nombre.strip())
+            if mensaje.fecha not in fechas:
+                fechas.append(mensaje.fecha)
+        for fecha in fechas:
+            for mensaje in self.Mensajes:
+                if fecha == mensaje.fecha:
+                    for servicio in mensaje.datos[2]:
+                        countServ = 1
+                        tmpCountPosServ = 0
+                        tmpCountNegServ = 0
+                        tmpCountNeuServ = 0
+                        if mensaje.datos[0] == 'Positivo':
+                            tmpCountPosServ = 1
+                        elif mensaje.datos[0] == 'Negativo':
+                            tmpCountNegServ = 1
+                        elif mensaje.datos[0] == 'Neutro':
+                            tmpCountNeuServ = 1
 
-            if positivas > negativas:
-                countP += 1
-                strJson += '["{}","{}",{},{},"{}"],'.format(mensaje.mensaje.replace('\n','').replace('\t',''),'Positivo',empresasmencionadas,serviciosMencionados,mensaje.fecha)
-            elif positivas < negativas:
-                countNeg += 1
-                strJson += '["{}","{}",{},{},"{}"],'.format(mensaje.mensaje.replace('\n','').replace('\t',''),'Negativo',empresasmencionadas,serviciosMencionados,mensaje.fecha)
-            elif positivas == negativas:
-                countNeu += 1
-                strJson += '["{}","{}",{},{},"{}"],'.format(mensaje.mensaje.replace('\n','').replace('\t',''),'Neutro',empresasmencionadas,serviciosMencionados,mensaje.fecha)
-        if strJson != '[':
-            
-            strJson = strJson[:-1] + ']' 
-            Json = eval(strJson)
-            
-            fecha = []
-            for tmpMensaje in self.Mensajes:
-                for mensaje in Json:
-                    countEmp = 0
-                    countServ = 0
-                    tmpCountPos = 0
-                    tmpCountNeg = 0
-                    tmpCountNeu = 0
+                        for tmpmensaje in self.Mensajes:
+                            if tmpmensaje.fecha == fecha and tmpmensaje.datos[2] == servicio and tmpmensaje != mensaje:
+                                countServ += 1
+                                if tmpmensaje.datos[0] == 'Positivo':
+                                    tmpCountPosServ += 1
+                                elif tmpmensaje.datos[0] == 'Negativo':
+                                    tmpCountNegServ += 1
+                                elif tmpmensaje.datos[0] == 'Neutro':
+                                    tmpCountNeuServ += 1
 
-                    tmpCountPosServ = 0
-                    tmpCountNegServ = 0
-                    tmpCountNeuServ = 0
+                        tmpjsonServicio = {
+                                    'servicio nombre="{}"'.format(servicio) :{
+                                    'mensajes' : {
+                                        'total' : countServ,
+                                        'positivos' :  tmpCountPosServ,
+                                        'negativos' : tmpCountNegServ,
+                                        'neutros' : tmpCountNeuServ
+                                    }
+                                    }
+                                }
+                        jsonServ.append(tmpjsonServicio)
+                    
+
+        '''for tmpMensaje in self.Mensajes:
+                    
                     
                     for empresa in Json:
-                        if tmpMensaje.fecha == mensaje[4]:
+                        countEmp = 0
+                        countServ = 0
+                        tmpCountPos = 0
+                        tmpCountNeg = 0
+                        tmpCountNeu = 0
+
+                        tmpCountPosServ = 0
+                        tmpCountNegServ = 0
+                        tmpCountNeuServ = 0
+                        if tmpMensaje.fecha == empresa[4]:
                             
-                            if mensaje[2] == empresa[2]:
+                            if tmpMensaje[2] == empresa[2]:
                                 countEmp += 1
-                                if mensaje[1] == 'Positivo':
+                                if tmpMensaje[1] == 'Positivo':
                                     tmpCountPos += 1
-                                elif mensaje[1] == 'Negativo':
+                                elif tmpMensaje[1] == 'Negativo':
                                     tmpCountNeg += 1
-                                elif mensaje[1] == 'Neutro':
+                                elif tmpMensaje[1] == 'Neutro':
                                     tmpCountNeu += 1
                                 
-                                if mensaje[3] == empresa[3]:
+                                if tmpMensaje[3] == empresa[3]:
                                     countServ += 1
-                                    if mensaje[1] == 'Positivo':
+                                    if tmpMensaje[1] == 'Positivo':
                                         tmpCountPosServ += 1
-                                    elif mensaje[1] == 'Negativo':
+                                    elif tmpMensaje[1] == 'Negativo':
                                         tmpCountNegServ += 1
-                                    elif mensaje[1] == 'Neutro':
+                                    elif tmpMensaje[1] == 'Neutro':
                                         tmpCountNeuServ += 1
                                     
                                 tmpjsonServicio = {
@@ -262,13 +253,57 @@ class Manager():
                                     }
                                 }
                         
-                        json.append(tmpJson)
+                        json.append(tmpJson)'''
         
+
         JsonRoot = {
-                'lista_respuestas' : json
+                'lista_respuestas' : 0
             }
         return json2xml(JsonRoot)
 
+    def buscarEnMensaje(self,mensaje):
+        patron = re.compile(r'\S+')
+        positivas = 0
+        negativas = 0
+        empresasmencionadas = []
+        serviciosMencionados = []
+        strJson = '['
+        positivas = 0
+        negativas = 0
+        palabras = patron.findall(mensaje)
+        empresasmencionadas = []
+        serviciosMencionados = []
+        for palabra in palabras:
+            for positivo in self.positivos:
+                if normalize(remove_punctuation(palabra).strip().lower())  == normalize(str(positivo.palabra).strip().lower()) :
+                    positivas += 1
+            for negativo in self.negativos:
+                if normalize(remove_punctuation(palabra).strip().lower())  == normalize(str(negativo.palabra).strip().lower()):
+                    negativas += 1
+            for empresa in self.empresas:
+                if normalize(remove_punctuation(palabra).strip().lower()) == normalize(str(empresa.nombre).strip().lower()):
+                    empresasmencionadas.append(empresa.nombre.strip() ) 
+                for servicio in empresa.servicios:
+                    if normalize(remove_punctuation(palabra)) == normalize(str(servicio.nombre).strip().lower()) and servicio.nombre not in serviciosMencionados :
+                        serviciosMencionados.append(servicio.nombre.strip())
+                    for alias in servicio.alias:
+                        if normalize(remove_punctuation(palabra)) == normalize(str(alias.nombre).strip().lower()) and servicio.nombre not in serviciosMencionados :
+                            serviciosMencionados.append(servicio.nombre.strip())
+
+        
+        if positivas > negativas:
+            strJson += '["{}",{},{},{}],'.format('Positivo',empresasmencionadas,serviciosMencionados,palabras)
+        elif positivas < negativas:
+            strJson += '["{}",{},{},{}],'.format('Negativo',empresasmencionadas,serviciosMencionados,palabras)
+        elif positivas == negativas:
+            strJson += '["{}",{},{},{}],'.format('Neutro',empresasmencionadas,serviciosMencionados,palabras)
+        
+        if strJson != '[':
+            
+            strJson = strJson[:-1] + ']' 
+            Json = eval(strJson)
+        
+        return Json
 
     def crearArchivoAlmacenamiento(self):
         pass
