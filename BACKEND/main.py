@@ -32,6 +32,7 @@ def add():
         raiz = ET.XML(xml)
         manage.xml = (xml)
         index2 = 0
+
         index = 0
         for elemento in raiz:
             
@@ -65,15 +66,19 @@ def add():
 
                                     index2 += 1
                             index += 1
-
+            
             if elemento.tag == 'lista_mensajes':
                 for subelemento in elemento:
+                    
                     patron_re = re.compile(r'(\D+:)\s+(\D+),\s+(\d+\D\d+\D\d+)\s+(\d+:\d+)\s+(\D+:)\s+(\S+|([^@]+@[^.]+.\S+))\s*(\D+:)\s+(\S+)\s+(\D+)')
                     datosMensaje = patron_re.findall(subelemento.text)
-                    manage.agregar_Mensaje(datosMensaje[0][1],datosMensaje[0][2],datosMensaje[0][3],datosMensaje[0][5],datosMensaje[0][8],datosMensaje[0][9])
+                    mensaje = datosMensaje[0][9].replace('\n','').replace('\t','')
+                    manage.agregar_Mensaje(datosMensaje[0][1],datosMensaje[0][2],datosMensaje[0][3],datosMensaje[0][5],datosMensaje[0][8],mensaje,manage.buscarEnMensaje(mensaje))
+
 
     except:
         return jsonify({'ok' : False, 'msg':'No se pudieron insertar mensajes'}), 200
+    
     return jsonify({'ok' : True, 'msg':'Mensajes insertados a la BD con exito'}), 200
 
 @app.route('/getXML')
@@ -94,6 +99,10 @@ def get_empresas():
 @app.route('/getNegativos')
 def get_negativo():
     return jsonify(manage.obtener_Negativos()), 200
+
+@app.route('/eliminarXML')
+def eliminar_XML():
+    return jsonify(manage.eliminarXML()), 200
 
 @app.route('/getPositivo')
 def get_positivo():

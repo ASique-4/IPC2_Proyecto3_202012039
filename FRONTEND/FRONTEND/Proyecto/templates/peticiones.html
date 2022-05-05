@@ -4,31 +4,39 @@
 <br>
 <center>
     <br>
+    <form action="/peticiones/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <button type="submit" name="Consultar Datos" class="button" >Consultar Datos</button>
+        <button type="submit" name="Resumen de clasificación por fecha" class="button">Resumen de clasificación por fecha</button>
+        <button type="submit" name="Resumen por rango de fechas" class="button">Resumen por rango de fechas</button>
+        <button type="submit" name="Reporte en PDF" class="button">Reporte en PDF</button>
+        <button type="submit" name="Prueba de mensaje" class="button">Prueba de mensaje</button>
 
-    <button type="button" class="button" onclick="Consultar()">Consultar Datos</button>
-    <button type="button" class="button">Resumen de clasificación por fecha</button>
-    <button type="button" class="button">Resumen por rango de fechas</button>
-    <button type="button" class="button">Reporte en PDF</button>
-    <button type="button" class="button">Prueba de mensaje</button>
 
 
-
-    <div class="form-group shadow-textarea">
-        <label for="exampleFormControlTextarea6" id="labelTxtArea" >
-            <h1 id="textoLabel"></h1>
-        </label>
-        {% if xml %}
-        <textarea class="form-control z-depth-1" id="xmlConsulta" rows="15" style="visibility: hidden;" readonly>{{ xml }}</textarea>
-        {% endif %}
-    </div>
+        <div class="form-group shadow-textarea">
+            <label for="exampleFormControlTextarea6" id="labelTxtArea">
+                {% if boton == 'Consultar Datos' %}
+                <h1 id="textoLabel">XML ingresado</h1>
+                {% elif  boton == 'Resumen de clasificación por fecha' %}
+                <h1 id="textoLabel">Resumen de clasificación por fecha</h1>
+                {% elif  boton == 'Resumen por rango de fechas' %}
+                <h1 id="textoLabel">Resumen por rango de fechas</h1>
+                {% elif  boton == 'Reporte en PDF' %}
+                <h1 id="textoLabel">Reporte en PDF</h1>
+                {% elif  boton == 'Prueba de mensaje' %}
+                <h1 id="textoLabel">Prueba de mensaje</h1>
+                {% else %}
+                <h1 id="textoLabel">Elija una opción</h1>
+                {% endif %}
+                
+            </label>
+            {% if textArea and boton == 'Consultar Datos' %}
+            <textarea class="form-control z-depth-1" id="xmlConsulta" rows="15" readonly>{{ textArea }}</textarea>
+            {% endif %}
+        </div>
+    </form>
 </center>
-<script>
-    function Consultar() {
-        var label = document.getElementById('textoLabel')
-        var xmlTxt = document.getElementById('xmlConsulta')
-        xmlTxt.style.visibility = 'visible'
-        label.innerText = 'XML Ingresado'
-    }
-</script>
+
 
 {% endblock content %}

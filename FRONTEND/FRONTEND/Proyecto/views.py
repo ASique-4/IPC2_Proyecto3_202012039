@@ -39,7 +39,7 @@ def add(request):
                 'xml':None,
                 'salida':None
             }
-            
+            requests.get(endpoint + 'eliminarXML')
         else:
             return render(request, 'index.html')
     except:
@@ -55,10 +55,28 @@ def peticiones(request):
     """
     context = {
         'datos': None,
-        'xml' : None 
+        'textArea' : None ,
+        'boton':''
     }
-    response = requests.get(endpoint + 'getXML')
-    datos = response.json()
-    context['xml'] = datos['xml']
+    try:
+        if request.method == 'POST' and 'Consultar Datos' in request.POST:
+            response = requests.get(endpoint + 'getXML')
+            datos = response.json()
+            context['textArea'] = datos['xml']
+            context['boton'] = 'Consultar Datos'
+        elif request.method == 'POST' and 'Resumen de clasificación por fecha' in request.POST:
+
+            context['boton'] = 'Resumen de clasificación por fecha'
+        elif request.method == 'POST' and 'Resumen por rango de fechas' in request.POST:
+
+            context['boton'] = 'Resumen por rango de fechas'
+        elif request.method == 'POST' and 'Reporte en PDF' in request.POST:
+
+            context['boton'] = 'Reporte en PDF'
+        elif request.method == 'POST' and 'Prueba de mensaje' in request.POST:
+
+            context['boton'] = 'Prueba de mensaje'
+    except:
+        pass
     
     return render(request,'peticiones.html',context=context)
