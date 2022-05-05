@@ -5,7 +5,6 @@ import requests
 
 
 endpoint = 'http://127.0.0.1:4000/'
-global xmlG
 def add(request):
     """
     It takes a POST request with a file attached, reads the file, and sends it to the endpoint
@@ -20,7 +19,7 @@ def add(request):
     }
     try:
         
-        if request.method == 'POST':
+        if request.method == 'POST' and 'Enviar' in request.POST:
 
             form = FileForm(request.POST, request.FILES)
             if form.is_valid():
@@ -28,7 +27,6 @@ def add(request):
                 xml_binary = f.read()
                 xml = xml_binary.decode('utf-8')
                 ctx['xml'] = xml
-                xmlG = xml
                 response = requests.post(endpoint + 'add', data=xml_binary)
                 if response.ok:
                     response = requests.get(endpoint + 'getContarPalabras')
@@ -36,13 +34,19 @@ def add(request):
                     ctx['salida'] = datos
                 else:
                     ctx['salida'] = 'El archivo se envio, pero hubo un error en el servidor'
+        elif request.method == 'POST' and 'Borrar' in request.POST:
+            ctx = {
+                'xml':None,
+                'salida':None
+            }
+            
         else:
             return render(request, 'index.html')
     except:
         print('No se pudo')
     return render(request, 'index.html', ctx)
 
-def consultarDatos(request):
+def peticiones(request):
     """
     It makes a request to the endpoint, gets the response, and then renders the response in the template
     
