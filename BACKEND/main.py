@@ -13,7 +13,7 @@ def index():
 
 @app.route('/obtenerSalida', methods = ['GET'])
 def obetenerSalida():
-    pass
+    return (manage.contarPalabras()), 200
 
 
 @app.route('/add', methods=['POST'])
@@ -85,8 +85,6 @@ def add():
 def get_XML():
 
     return jsonify({'xml' : manage.xml}) , 200
-
-
 
 @app.route('/getMensajes')
 def get_mensajes():

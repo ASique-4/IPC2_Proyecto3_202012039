@@ -35,7 +35,7 @@ def add(request):
                 if response.ok:
                     response = requests.get(endpoint + 'getContarPalabras')
                     datos = response.json()
-                    ctx['salida'] = datos
+                    ctx['salida'] =  datos
                 else:
                     ctx['salida'] = 'El archivo se envio, pero hubo un error en el servidor'
         elif request.method == 'POST' and 'Borrar' in request.POST:

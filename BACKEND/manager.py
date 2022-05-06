@@ -61,16 +61,17 @@ class Manager():
 
     def agregar_Mensaje(self, l, f, h, u, r, m, d):
         """
-        It takes 6 arguments, and creates a new Mensaje object with those arguments, and then appends
-        that object to the list of Mensajes
+        It adds a new message to the list of messages.
         
         :param l: location
         :param f: fecha
         :param h: hour
         :param u: user
-        :param r: social red
+        :param r: receiver
         :param m: message
+        :param d: date
         """
+
         nuevo = Mensaje(l, f, h, u, r, m, d)
         self.Mensajes.append(nuevo)
 
@@ -99,7 +100,8 @@ class Manager():
                 'hora' : Mensaje.hora,
                 'usuario' : Mensaje.usuario,
                 'red' : Mensaje.red,
-                'mensaje' : Mensaje.mensaje
+                'mensaje' : Mensaje.mensaje,
+                'datos': Mensaje.datos
             }
             json.append(Mensaje)
         return json
@@ -135,6 +137,10 @@ class Manager():
     
 
     def contarPalabras(self):
+        """
+        It counts the number of messages per day, per company, per service, and per sentiment.
+        :return: A string with the XML format.
+        """
         fechas = []
         jsonEmp = []
         jsonServ = []
