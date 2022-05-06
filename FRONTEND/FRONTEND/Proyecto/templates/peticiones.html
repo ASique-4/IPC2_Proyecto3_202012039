@@ -31,7 +31,9 @@
                         <input class="form-control" name="EmpresaTxt" id="EmpresaTxt" type="text">
                     </div>
                     <br>
-                    <button type="submit" name="ResumenPorFechaEnviar" style="font-size: medium;" class="button">Buscar</button>
+                    <button type="submit" name="ResumenPorFechaEnviar" style="font-size: medium;background-color: green;" class="button">Buscar</button>
+                    <br>
+                    <br>
                     {% if ResumenPorFecha %}
                     <textarea class="form-control z-depth-1" id="xmlConsulta" style="background-color: #a89673;color: rgb(45, 10, 55);"rows="15" cols="30"readonly>{{ ResumenPorFecha }}</textarea>
                     {% endif %}

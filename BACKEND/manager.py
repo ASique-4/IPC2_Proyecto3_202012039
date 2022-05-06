@@ -298,6 +298,13 @@ class Manager():
         return json2xml(JsonRoot)
 
     def buscarEnMensaje(self,mensaje):
+        """
+        It takes a string, and returns a list of lists, where each list contains a string, a list of
+        strings, a list of strings, and a list of strings
+        
+        :param mensaje: The message to be analyzed
+        :return: A list of lists.
+        """
         patron = re.compile(r'\S+')
         positivas = 0
         negativas = 0
