@@ -13,30 +13,30 @@
         <button type="submit" class="button" name="Borrar" style="background-color: red;">Resetear</button>
         <br>
         <br>
-        <label for="file"><h4>Cargar Archivo</h4></label>
+        <label for="file" style="color: #000000;" ><h4>Cargar Archivo</h4></label>
     
-    <input type="file" id="file" name="file"  accept="text/xml">
+    <input type="file" id="file" name="file" style="color: #000000;" accept="text/xml">
     </center>
     <center>
         <div class="form-group shadow-textarea" style="float: left;height: 20em;width: 700px;">
             <label for="exampleFormControlTextarea6" id="labelTxtArea">
-                <h1 id="textoLabel">Entrada</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Entrada</h1>
             </label>
             {% if xml %}
-            <textarea class="form-control z-depth-1" id="CuadroDeTexto" cols="30"  rows="15" readonly>{{ xml }}</textarea>
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto" cols="30" style="background-color: #a89673;color: rgb(45, 10, 55);" rows="15" readonly>{{ xml }}</textarea>
             {% else %}
-            <textarea class="form-control z-depth-1" id="CuadroDeTexto" cols="30"  rows="15" readonly></textarea>
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto" cols="30" style="background-color: #a89673;color: rgb(45, 10, 55);" rows="15" readonly></textarea>
             {% endif %}
             
         </div>
         <div class="form-group shadow-textarea" style="float: right;height: 20em;width: 700px;">
             <label for="exampleFormControlTextarea6" id="labelTxtArea">
-                <h1 id="textoLabel">Salida</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Salida</h1>
             </label>
             {% if salida %}
-            <textarea class="form-control z-depth-1" id="CuadroDeTexto2" rows="15" cols="30" readonly>{{ salida }}</textarea>
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto2" style="background-color: #a89673;color: rgb(45, 10, 55);" rows="15" cols="30" readonly>{{ salida }}</textarea>
             {% else %}
-            <textarea class="form-control z-depth-1" id="CuadroDeTexto2" rows="15" cols="30"  readonly></textarea>
+            <textarea class="form-control z-depth-1" id="CuadroDeTexto2" style="background-color: #a89673;color: rgb(45, 10, 55);" rows="15" cols="30"  readonly></textarea>
             {% endif %}
             
         </div>

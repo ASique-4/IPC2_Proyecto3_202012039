@@ -5,6 +5,10 @@ import requests
 
 
 endpoint = 'http://127.0.0.1:4000/'
+def ayuda(request):
+    return render(request,'ayuda.html')
+def home(request):
+    return render(request,'home.html')
 def add(request):
     """
     It takes a POST request with a file attached, reads the file, and sends it to the endpoint

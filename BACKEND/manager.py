@@ -136,128 +136,152 @@ class Manager():
 
     def contarPalabras(self):
         fechas = []
+        jsonEmp = []
         jsonServ = []
+        json = []
+        tmpEmpresas = []
+        tmpServicios = []
         for mensaje in self.Mensajes:
             if mensaje.fecha not in fechas:
                 fechas.append(mensaje.fecha)
         for fecha in fechas:
+            jsonEmp = []
+            tmpEmpresas = []
+            jsonServ = []
+            tmpServicios = []
+            countMensajes = 0
+            countMsgPos = 0
+            countMsgNeg = 0
+            countMsgNeu = 0
             for mensaje in self.Mensajes:
                 if fecha == mensaje.fecha:
-                    for servicio in mensaje.datos[2]:
-                        countServ = 1
-                        tmpCountPosServ = 0
-                        tmpCountNegServ = 0
-                        tmpCountNeuServ = 0
-                        if mensaje.datos[0] == 'Positivo':
-                            tmpCountPosServ = 1
-                        elif mensaje.datos[0] == 'Negativo':
-                            tmpCountNegServ = 1
-                        elif mensaje.datos[0] == 'Neutro':
-                            tmpCountNeuServ = 1
+                    countMensajes += 1
+                    
+                    tmpCountPos = 0
+                    tmpCountNeg = 0
+                    tmpCountNeu = 0      
 
+                    for empresa in mensaje.datos[1]:
+                        countEmp = 1
+                        
                         for tmpmensaje in self.Mensajes:
-                            if tmpmensaje.fecha == fecha and tmpmensaje.datos[2] == servicio and tmpmensaje != mensaje:
-                                countServ += 1
-                                if tmpmensaje.datos[0] == 'Positivo':
-                                    tmpCountPosServ += 1
-                                elif tmpmensaje.datos[0] == 'Negativo':
-                                    tmpCountNegServ += 1
-                                elif tmpmensaje.datos[0] == 'Neutro':
-                                    tmpCountNeuServ += 1
-
-                        tmpjsonServicio = {
-                                    'servicio nombre="{}"'.format(servicio) :{
-                                    'mensajes' : {
-                                        'total' : countServ,
-                                        'positivos' :  tmpCountPosServ,
-                                        'negativos' : tmpCountNegServ,
-                                        'neutros' : tmpCountNeuServ
-                                    }
-                                    }
-                                }
-                        jsonServ.append(tmpjsonServicio)
-                    
-
-        '''for tmpMensaje in self.Mensajes:
-                    
-                    
-                    for empresa in Json:
-                        countEmp = 0
-                        countServ = 0
-                        tmpCountPos = 0
-                        tmpCountNeg = 0
-                        tmpCountNeu = 0
-
-                        tmpCountPosServ = 0
-                        tmpCountNegServ = 0
-                        tmpCountNeuServ = 0
-                        if tmpMensaje.fecha == empresa[4]:
-                            
-                            if tmpMensaje[2] == empresa[2]:
+                            if tmpmensaje.fecha == fecha  and tmpmensaje.datos[1] == empresa and tmpmensaje != mensaje:
                                 countEmp += 1
-                                if tmpMensaje[1] == 'Positivo':
-                                    tmpCountPos += 1
-                                elif tmpMensaje[1] == 'Negativo':
-                                    tmpCountNeg += 1
-                                elif tmpMensaje[1] == 'Neutro':
-                                    tmpCountNeu += 1
-                                
-                                if tmpMensaje[3] == empresa[3]:
+
+                        for servicio in mensaje.datos[2]:
+                            countServ = 1
+                            tmpCountPosServ = 0
+                            tmpCountNegServ = 0
+                            tmpCountNeuServ = 0
+                            if mensaje.datos[0] == 'Positivo':
+                                tmpCountPosServ = 1
+                            elif mensaje.datos[0] == 'Negativo':
+                                tmpCountNegServ = 1
+                            elif mensaje.datos[0] == 'Neutro':
+                                tmpCountNeuServ = 1
+
+                            for tmpmensaje in self.Mensajes:
+                                if tmpmensaje.fecha == fecha and tmpmensaje.datos[2] == servicio and tmpmensaje.datos[1] == empresa and tmpmensaje != mensaje:
                                     countServ += 1
-                                    if tmpMensaje[1] == 'Positivo':
+                                    if tmpmensaje.datos[0] == 'Positivo':
                                         tmpCountPosServ += 1
-                                    elif tmpMensaje[1] == 'Negativo':
+                                    elif tmpmensaje.datos[0] == 'Negativo':
                                         tmpCountNegServ += 1
-                                    elif tmpMensaje[1] == 'Neutro':
+                                    elif tmpmensaje.datos[0] == 'Neutro':
                                         tmpCountNeuServ += 1
-                                    
+
+                            tmpCountPos += tmpCountPosServ
+                            tmpCountNeg += tmpCountNegServ
+                            tmpCountNeu += tmpCountNeuServ
+                            if servicio in tmpServicios and tmpServicios != [] and jsonServ != []:
+
+                                jsonAnt = jsonServ[-1]['servicio nombre="{}"'.format(servicio)]['mensajes']
                                 tmpjsonServicio = {
-                                        'servicio nombre="{}"'.format(mensaje[3][0]) :{
-                                        'mensajes' : {
-                                            'total' : countServ,
-                                            'positivos' :  tmpCountPosServ,
-                                            'negativos' : tmpCountNegServ,
-                                            'neutros' : tmpCountNeuServ
-                                        }
-                                        }
-                                }
-                                jsonServ.update(tmpjsonServicio)
-                            
-                            tmpjsonEmpresa = {
-                                        'empresa nombre="{}"'.format((mensaje[2][0])) : {
+                                            'servicio nombre="{}"'.format(servicio) :{
                                             'mensajes' : {
-                                                'total' : countEmp,
-                                                'positivos' :  tmpCountPos,
-                                                'negativos' : tmpCountNeg,
-                                                'neutros' : tmpCountNeu
+                                                'total' : countServ + int(jsonAnt['total']),
+                                                'positivos' :  tmpCountPosServ+ int(jsonAnt['positivos']),
+                                                'negativos' : tmpCountNegServ + int(jsonAnt['negativos']),
+                                                'neutros' : tmpCountNeuServ + int(jsonAnt['neutros'])
+                                            }
+                                            }
+                                        }
+                                jsonServ.pop()
+                                jsonServ.append(tmpjsonServicio)
+
+                            else:
+                                tmpjsonServicio = {
+                                            'servicio nombre="{}"'.format(servicio) :{
+                                            'mensajes' : {
+                                                'total' : countServ ,
+                                                'positivos' :  tmpCountPosServ,
+                                                'negativos' : tmpCountNegServ ,
+                                                'neutros' : tmpCountNeuServ
+                                            }
+                                            }
+                                        }
+                                tmpServicios.append(servicio)
+                                jsonServ.append(tmpjsonServicio)
+
+
+                        
+                        if empresa in tmpEmpresas and tmpEmpresas != [] and jsonEmp != []:
+                            jsonAnt = jsonEmp[-1]['empresa nombre="{}"'.format(empresa)]['mensajes']
+                            tmpjsonEmpresa = {
+                                        'empresa nombre="{}"'.format(empresa) : {
+                                            'mensajes' : {
+                                                'total' : countEmp + int(jsonAnt['total']),
+                                                'positivos' :  tmpCountPos + int(jsonAnt['positivos']),
+                                                'negativos' : tmpCountNeg +int(jsonAnt['negativos']),
+                                                'neutros' : tmpCountNeu + int(jsonAnt['neutros'])
                                             },
                                             'servicios' : jsonServ
                                             }
                             }
-                            jsonEmp.update(tmpjsonEmpresa)
+                            
+                            jsonEmp.pop()
+                            jsonEmp.append(tmpjsonEmpresa)
+                            jsonAnt = jsonEmp[-1]['empresa nombre="{}"'.format(empresa)]['mensajes']
+                            countMsgPos +=  int(jsonAnt['positivos'])
+                            countMsgNeg += int(jsonAnt['negativos'])
+                            countMsgNeu +=  int(jsonAnt['neutros'])
 
-                    if tmpMensaje.fecha == mensaje[4] and tmpMensaje.fecha not in fecha:
-                        fecha.append(tmpMensaje.fecha)
-                        
-                        tmpJson = {
-
-                                'respuesta' : {
-                                    'fecha':mensaje[4],
-                                    'mensaje' : {
-                                        'total' : len(self.Mensajes),
-                                        'positivos' : countP,
-                                        'negativos' : countNeg,
-                                        'neutros' : countNeu
-                                    },
-                                    'analisis': jsonEmp
-                                    }
+                        else:
+                            countMsgNeg += tmpCountNeg
+                            countMsgNeu += tmpCountNeu
+                            countMsgPos += tmpCountPos
+                            tmpjsonEmpresa = {
+                                            'empresa nombre="{}"'.format(empresa) : {
+                                                'mensajes' : {
+                                                    'total' : countEmp,
+                                                    'positivos' :  tmpCountPos,
+                                                    'negativos' : tmpCountNeg,
+                                                    'neutros' : tmpCountNeu
+                                                },
+                                                'servicios' : jsonServ
+                                                }
                                 }
-                        
-                        json.append(tmpJson)'''
-        
+                            tmpEmpresas.append(empresa)
+                            jsonEmp.append(tmpjsonEmpresa)
+
+            tmpJson = {
+
+                    'respuesta' : {
+                        'fecha':fecha,
+                        'mensaje' : {
+                            'total' : countMensajes,
+                            'positivos' : countMsgPos,
+                            'negativos' : countMsgNeg,
+                            'neutros' : countMsgNeu
+                        },
+                        'analisis': jsonEmp
+                        }
+                    }
+            
+            json.append(tmpJson)
 
         JsonRoot = {
-                'lista_respuestas' : 0
+                'lista_respuestas' : json
             }
         return json2xml(JsonRoot)
 
@@ -267,7 +291,7 @@ class Manager():
         negativas = 0
         empresasmencionadas = []
         serviciosMencionados = []
-        strJson = '['
+        strJson = ''
         positivas = 0
         negativas = 0
         palabras = patron.findall(mensaje)
@@ -300,7 +324,7 @@ class Manager():
         
         if strJson != '[':
             
-            strJson = strJson[:-1] + ']' 
+            strJson = strJson[:-1]  
             Json = eval(strJson)
         
         return Json

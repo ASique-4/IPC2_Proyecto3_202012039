@@ -6,33 +6,34 @@
     <br>
     <form action="/peticiones/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <button type="submit" name="Consultar Datos" class="button" >Consultar Datos</button>
-        <button type="submit" name="Resumen de clasificación por fecha" class="button">Resumen de clasificación por fecha</button>
-        <button type="submit" name="Resumen por rango de fechas" class="button">Resumen por rango de fechas</button>
-        <button type="submit" name="Reporte en PDF" class="button">Reporte en PDF</button>
-        <button type="submit" name="Prueba de mensaje" class="button">Prueba de mensaje</button>
+        <button type="submit" name="Consultar Datos" style="font-size: medium;" class="button" >Consultar Datos</button>
+        <button type="submit" name="Resumen de clasificación por fecha" style="font-size: medium;" class="button">Resumen de clasificación por fecha</button>
+        <button type="submit" name="Resumen por rango de fechas" style="font-size: medium;" class="button">Resumen por rango de fechas</button>
+        <button type="submit" name="Reporte en PDF" style="font-size: medium;" class="button">Reporte en PDF</button>
+        <button type="submit" name="Prueba de mensaje" style="font-size: medium;" class="button">Prueba de mensaje</button>
 
-
+        <br>
+        <br>
 
         <div class="form-group shadow-textarea">
             <label for="exampleFormControlTextarea6" id="labelTxtArea">
                 {% if boton == 'Consultar Datos' %}
-                <h1 id="textoLabel">XML ingresado</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">XML ingresado</h1>
                 {% elif  boton == 'Resumen de clasificación por fecha' %}
-                <h1 id="textoLabel">Resumen de clasificación por fecha</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Resumen de clasificación por fecha</h1>
                 {% elif  boton == 'Resumen por rango de fechas' %}
-                <h1 id="textoLabel">Resumen por rango de fechas</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Resumen por rango de fechas</h1>
                 {% elif  boton == 'Reporte en PDF' %}
-                <h1 id="textoLabel">Reporte en PDF</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Reporte en PDF</h1>
                 {% elif  boton == 'Prueba de mensaje' %}
-                <h1 id="textoLabel">Prueba de mensaje</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Prueba de mensaje</h1>
                 {% else %}
-                <h1 id="textoLabel">Elija una opción</h1>
+                <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Elija una opción</h1>
                 {% endif %}
                 
             </label>
             {% if textArea and boton == 'Consultar Datos' %}
-            <textarea class="form-control z-depth-1" id="xmlConsulta" rows="15" readonly>{{ textArea }}</textarea>
+            <textarea class="form-control z-depth-1" id="xmlConsulta" style="background-color: #a89673;color: rgb(45, 10, 55);"rows="15" cols="30"readonly>{{ textArea }}</textarea>
             {% endif %}
         </div>
     </form>
