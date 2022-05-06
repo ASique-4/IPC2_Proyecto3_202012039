@@ -1,4 +1,5 @@
 
+import webbrowser
 from Empresas import Empresa
 from Mensaje import Mensaje
 from Negativos import Negativo
@@ -19,6 +20,8 @@ def normalize(s):
 
 def remove_punctuation ( text ):
         return re.sub('[%s]' % re.escape(string.punctuation), ' ', text)
+
+
 
 def json2xml(json_obj, line_padding=""):
     patron = re.compile(r'\S+')
@@ -58,6 +61,9 @@ class Manager():
         self.empresas = []
         self.xml = ''
     
+    def abrirPDF(self):
+        path = 'BACKEND\Ensayo P3.pdf'
+        webbrowser.open(path)
 
     def agregar_Mensaje(self, l, f, h, u, r, m, d):
         """

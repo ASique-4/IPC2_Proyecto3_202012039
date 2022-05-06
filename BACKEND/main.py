@@ -110,6 +110,10 @@ def get_positivo():
 def get_numeroPalabras():
     return jsonify(manage.contarPalabras()), 200
 
+@app.route('/getAbrirPDF')
+def get_AbrirPdf():
+    manage.abrirPDF()
+    return jsonify({'ok':True,'msg':'Se está abriendo el pdf'}), 200
 
 if __name__=='__main__':
     app.run(debug=True, port=4000)

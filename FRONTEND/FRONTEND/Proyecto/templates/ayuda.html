@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<form action="/ayuda/" method="post"></form>
+<form action="/ayuda/" method="GET">
+{% csrf_token %}
 <br>
 <button type="submit" name="datosEstudiante" style="font-size: medium;" class="button">Datos del estudiante</button>
 <button type="submit" name="Documentacion" style="font-size: medium;" class="button">Documentacion</button>
@@ -8,6 +9,7 @@
 
 <br>
 <br>
+{% if boton and boton == 'datosEstudiante' %}
 <center>
     <div class="container">
         <div class="row">
@@ -23,6 +25,11 @@
         </div>
     </div>
 </center>
+{% elif boton and boton == 'Documentacion' %}
+
+    <h1><span>Abriendo PDF</span></h1>
+{% endif %}
+</form>
 
 
 

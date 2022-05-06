@@ -21,12 +21,28 @@
                 <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">XML ingresado</h1>
                 {% elif  boton == 'Resumen de clasificación por fecha' %}
                 <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Resumen de clasificación por fecha</h1>
+                <form action="/peticiones/" method="post">
+                    <div class="form-group">
+                        <label for="inputdefault"><h1><span>Fecha</span></h1></label>
+                        <input class="form-control" name="FechaTxt" id="FechaTxt"" type="text">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputdefault"><h1><span>Empresa</span></h1></label>
+                        <input class="form-control" name="EmpresaTxt" id="EmpresaTxt" type="text">
+                    </div>
+                    <br>
+                    <button type="submit" name="ResumenPorFechaEnviar" style="font-size: medium;" class="button">Buscar</button>
+                    {% if ResumenPorFecha %}
+                    <textarea class="form-control z-depth-1" id="xmlConsulta" style="background-color: #a89673;color: rgb(45, 10, 55);"rows="15" cols="30"readonly>{{ ResumenPorFecha }}</textarea>
+                    {% endif %}
+                </form>
                 {% elif  boton == 'Resumen por rango de fechas' %}
                 <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Resumen por rango de fechas</h1>
                 {% elif  boton == 'Reporte en PDF' %}
                 <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Reporte en PDF</h1>
                 {% elif  boton == 'Prueba de mensaje' %}
                 <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Prueba de mensaje</h1>
+                
                 {% else %}
                 <h1 id="textoLabel" style="color: #BD0034;font-size: xx-large;">Elija una opción</h1>
                 {% endif %}

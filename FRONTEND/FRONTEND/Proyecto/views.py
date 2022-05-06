@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from Proyecto.forms import *
 from django.shortcuts import render
 import requests
@@ -6,7 +7,29 @@ import requests
 
 endpoint = 'http://127.0.0.1:4000/'
 def ayuda(request):
-    return render(request,'ayuda.html')
+    ctx = {
+        'boton':None,
+    }
+    try:
+        
+        if request.method == 'GET' and 'datosEstudiante' in request.GET:
+            ctx = {
+
+                'boton':'datosEstudiante'
+            }
+        elif request.method == 'GET' and 'Documentacion' in request.GET:
+            ctx = {
+
+                'boton':'Documentacion'
+            }
+            requests.get(endpoint+'getAbrirPDF')
+        else:
+            return render(request,'ayuda.html')
+    except:
+        print('No se pudo')
+
+    return render(request,'ayuda.html',ctx)
+
 def home(request):
     return render(request,'home.html')
 def add(request):
